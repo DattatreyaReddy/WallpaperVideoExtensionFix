@@ -2,7 +2,7 @@
 
 **PROJECT STATUS: ABANDONED**
 
-WallpaperAerialsExtensionFix is a lightweight application designed to automatically terminate the `WallpaperAerialsExtensionFix` service each time you log in to macOS. If you've experienced issues with custom Aerial wallpapers, this tool might help. The app runs quietly in the background, without generating logs or indicators, ensuring a seamless experience.
+WallpaperAerialsExtensionFix is a lightweight application designed to automatically terminate the `WallpaperAerialsExtension` service each time you log in to macOS. If you've experienced issues with custom Aerial wallpapers, this tool might help. The app runs quietly in the background, without generating logs or indicators, ensuring a seamless experience.
 
 Features
  - Runs silently, with no persistent UI or notifications.
