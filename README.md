@@ -1,4 +1,7 @@
 Forked From https://github.com/Proton0/WallpaperVideoExtensionFix
+
+---
+
 # WallpaperAerialsExtensionFix
 
 **PROJECT STATUS: ABANDONED**
