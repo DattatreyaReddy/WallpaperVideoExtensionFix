@@ -7,7 +7,7 @@
 #include <libproc.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
-const char* processName = "WallpaperVideoExtension";
+const char* processName = "WallpaperAerialsExtension";
 // Function to kill the process by name
 void killWallpaper() {
     int numProcs = proc_listpids(PROC_ALL_PIDS, 0, NULL, 0);
