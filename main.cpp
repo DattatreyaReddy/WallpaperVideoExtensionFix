@@ -1,34 +1,37 @@
-#include <iostream>
-#include <syslog.h>
 #include <vector>
-#include <string>
+#include <syslog.h>
 #include <signal.h>
 #include <unistd.h>
-#include <ApplicationServices/ApplicationServices.h>
+#include <string.h>
 #include <libproc.h>
 #include <CoreFoundation/CoreFoundation.h>
-#include <CoreServices/CoreServices.h>
-const char* processName = "WallpaperAerialsExtension";
-// Function to kill the process by name
+
+// Configuration
+const char* TARGET_PROCESS = "WallpaperAerialsExtension";
+const char* LOG_TAG = "WallpaperFix";
+
 void killWallpaper() {
+    // Get list of PIDs
     int numProcs = proc_listpids(PROC_ALL_PIDS, 0, NULL, 0);
     if (numProcs <= 0) {
-        std::cerr << "Error retrieving process list" << std::endl;
+        syslog(LOG_ERR, "%s: Error retrieving process list count", LOG_TAG);
         return;
     }
 
-    std::vector<pid_t> pids(numProcs);
-    numProcs = proc_listpids(PROC_ALL_PIDS, 0, pids.data(), pids.size() * sizeof(pid_t));
+    // Allocate buffer
+    std::vector<pid_t> pids(numProcs + 10);
+    int actualCount = proc_listpids(PROC_ALL_PIDS, 0, pids.data(), pids.size() * sizeof(pid_t));
 
-    for (int i = 0; i < numProcs; ++i) {
+    if (actualCount <= 0) return;
+
+    char procNameBuffer[PROC_PIDPATHINFO_MAXSIZE];
+
+    for (int i = 0; i < actualCount; ++i) {
         if (pids[i] == 0) continue;
-
-        char procNameBuffer[PROC_PIDPATHINFO_MAXSIZE];
         if (proc_name(pids[i], procNameBuffer, sizeof(procNameBuffer)) > 0) {
-            if (std::string(procNameBuffer) == processName) {
-                syslog(LOG_NOTICE, "WallpaperFix: Killing process %s (%d)", processName , pids[i]);
+            if (strcmp(procNameBuffer, TARGET_PROCESS) == 0) {
+                syslog(LOG_NOTICE, "%s: Killing %s (PID: %d)", LOG_TAG, TARGET_PROCESS, pids[i]);
                 kill(pids[i], SIGKILL);
-                break;
             }
         }
     }
@@ -40,20 +43,22 @@ void systemEventCallback(CFNotificationCenterRef center,
                          const void *object,
                          CFDictionaryRef userInfo) {
     if (CFStringCompare(name, CFSTR("com.apple.screenIsUnlocked"), 0) == kCFCompareEqualTo) {
-        syslog(LOG_NOTICE, "WallpaperFix: unlock detected");
+        syslog(LOG_NOTICE, "%s: Unlock detected, scanning processes...", LOG_TAG);
         killWallpaper();
     }
 }
 
 int main() {
-    // Create a notification center
+    // Initialize logging
+    openlog(LOG_TAG, LOG_PID | LOG_CONS, LOG_USER);
+
     CFNotificationCenterRef center = CFNotificationCenterGetDistributedCenter();
     if (!center) {
-        std::cerr << "Failed to get notification center!" << std::endl;
+        syslog(LOG_ERR, "%s: Failed to get distributed notification center!", LOG_TAG);
         return -1;
     }
 
-    // Register for screen unlock notifications
+    // Register observer
     CFNotificationCenterAddObserver(
             center,
             nullptr,
@@ -63,10 +68,11 @@ int main() {
             CFNotificationSuspensionBehaviorDeliverImmediately
     );
 
-    syslog(LOG_NOTICE, "WallpaperFix: Listening for unlock events...");
+    syslog(LOG_NOTICE, "%s: Started successfully. Listening for unlock events...", LOG_TAG);
 
     // Run the main loop
     CFRunLoopRun();
 
+    closelog();
     return 0;
 }
