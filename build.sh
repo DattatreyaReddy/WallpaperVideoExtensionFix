@@ -3,7 +3,7 @@ set -e
 
 BUILD_DIR="build"
 
-echo "🔧 WallpaperVideoExtensionFix build script"
+echo "🔧 WallpaperAerialsExtensionFix build script"
 
 # 1. Ensure Xcode Command Line Tools
 if ! xcode-select -p &>/dev/null; then

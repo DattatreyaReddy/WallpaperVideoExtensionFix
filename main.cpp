@@ -1,4 +1,5 @@
 #include <iostream>
+#include <syslog.h>
 #include <vector>
 #include <string>
 #include <signal.h>
@@ -25,7 +26,7 @@ void killWallpaper() {
         char procNameBuffer[PROC_PIDPATHINFO_MAXSIZE];
         if (proc_name(pids[i], procNameBuffer, sizeof(procNameBuffer)) > 0) {
             if (std::string(procNameBuffer) == processName) {
-                std::cout << "Killing " << processName << " (PID: " << pids[i] << ")" << std::endl;
+                syslog(LOG_NOTICE, "WallpaperFix: Killing process %s (%d)", processName , pids[i]);
                 kill(pids[i], SIGKILL);
                 break;
             }
@@ -39,7 +40,7 @@ void systemEventCallback(CFNotificationCenterRef center,
                          const void *object,
                          CFDictionaryRef userInfo) {
     if (CFStringCompare(name, CFSTR("com.apple.screenIsUnlocked"), 0) == kCFCompareEqualTo) {
-        std::cout << "unlock detected" << std::endl;
+        syslog(LOG_NOTICE, "WallpaperFix: unlock detected");
         killWallpaper();
     }
 }
@@ -62,7 +63,7 @@ int main() {
             CFNotificationSuspensionBehaviorDeliverImmediately
     );
 
-    std::cout << "Listening for unlock events..." << std::endl;
+    syslog(LOG_NOTICE, "WallpaperFix: Listening for unlock events...");
 
     // Run the main loop
     CFRunLoopRun();
