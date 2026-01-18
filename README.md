@@ -35,6 +35,35 @@ chmod +x /path/to/WallpaperAerialsExtensionFix.app/Contents/MacOS/WallpaperAeria
 
 7. (Optional) Confirm the app is running by opening Activity Monitor and searching for `WallpaperAerialsExtensionFix`.
 
+## 🛠 Debugging & Logs
+
+Since `WallpaperAerialsExtensionFix` runs as a background agent (headless), it does not have a visible window or standard terminal output. To verify the application is running or to troubleshoot issues, you must use the native macOS **Console** app.
+
+### How to View Logs
+
+1.  **Open Console.app**
+    * Press `Cmd + Space` to open Spotlight Search.
+    * Type **Console** and press `Enter`.
+
+2.  **Start Streaming**
+    * Ensure the application is capturing events by clicking the **Start** button in the top toolbar (if it currently says "Paused").
+
+3.  **Filter for the App**
+    * In the **Search** bar at the top right of the window, type:
+      ```text
+      WallpaperFix
+      ```
+    * Press `Enter` to apply the filter.
+
+4.  **Verify Output**
+    * You will see real-time log entries appear as the app runs.
+    * **Success Indicators:**
+        * `WallpaperFix: Listening for unlock events...` (App started successfully)
+        * `WallpaperFix: unlock detected` (Screen unlock caught)
+        * `WallpaperFix: Killing WallpaperAerialsExtension (PID: xxxx)` (Fix applied)
+
+> **Tip:** If you don't see any logs immediately, try locking (`Cmd + Ctrl + Q`) and unlocking your screen to force an event trigger.
+
 # Why Was This Project Archived?
 
 WallpaperAerialsExtensionFix was originally a part of a larger project named AerialUtil, which was later abandoned. Due to many people having issues with custom Aerials, this utility was published as a standalone tool to help those encountering issues with custom Aerials on macOS.
