@@ -22,7 +22,7 @@ target_link_libraries(WallpaperAerialsExtensionFix
 
 set_target_properties(WallpaperAerialsExtensionFix PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER "com.padya.WallpaperAerialsExtensionFix"
-    MACOSX_BUNDLE_BUNDLE_VERSION "1.0.0"
-    MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0"
+    MACOSX_BUNDLE_BUNDLE_VERSION "1.1.0"
+    MACOSX_BUNDLE_SHORT_VERSION_STRING "1.1"
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in
 )
